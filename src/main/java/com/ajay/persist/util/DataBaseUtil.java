@@ -10,7 +10,6 @@ import java.sql.Statement;
 import java.util.Properties;
 import com.ajay.persist.exceptions.PersistException;
 
-
 public class DataBaseUtil {
 
 	public static Connection getDBConnection() throws PersistException {
@@ -20,21 +19,27 @@ public class DataBaseUtil {
 		try {
 			fis = new FileInputStream("src/main/resources/db.properties");
 			props.load(fis);
-			
+
 			// load the Driver Class
 			Class.forName(props.getProperty("DB_DRIVER_CLASS"));
 
 			// create the connection now
 			con = DriverManager.getConnection(props.getProperty("DB_URL"),
-											  props.getProperty("DB_USERNAME"),
-											  props.getProperty("DB_PASSWORD"));
-		} catch (IOException | ClassNotFoundException | SQLException e) {
+					props.getProperty("DB_USERNAME"),
+					props.getProperty("DB_PASSWORD"));
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			throw new PersistException();
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+			throw new PersistException();
+		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new PersistException();
 		}
-		return con;	
-	}	
-	
+		return con;
+	}
+
 	public static void closeConnection(Connection connObj)
 			throws PersistException {
 		try {
